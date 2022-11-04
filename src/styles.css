@@ -1,5 +1,11 @@
 .App {
-    font-family: sans-serif;
-    text-align: center;
-  }
-  
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.table-root {
+  margin-top: 10px;
+}
+.table-title {
+  height: 80px;
+}
