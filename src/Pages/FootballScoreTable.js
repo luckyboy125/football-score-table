@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import PropTypes, { number } from "prop-types";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
@@ -16,14 +16,22 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import tableTitleImg from "../asset/table_header.png";
 import { data } from "../data";
-import { PremierLeague } from "../config/teams";
 import getTime from "date-fns/getTime";
 import { GameStatus } from "../config/const";
+import { PremierLeague } from "../config/teams";
 
 const useRowStyles = makeStyles({
   root: {
     "& > *": {
       borderBottom: "unset",
+    },
+  },
+  dropdownBtn: {
+    "&:hover": {
+      backgroundColor: "#ff2882",
+      "& svg": {
+        color: "#fff",
+      },
     },
   },
 });
@@ -36,7 +44,7 @@ function Row(props) {
   return (
     <React.Fragment>
       <TableRow className={classes.root}>
-        <TableCell>
+        <TableCell className={classes.dropdownBtn}>
           <IconButton
             aria-label="expand row"
             size="small"
@@ -48,33 +56,73 @@ function Row(props) {
         <TableCell component="th" scope="row">
           {order + 1}
         </TableCell>
-        <TableCell align="right">{data.team}</TableCell>
-        <TableCell align="right">{data.won}</TableCell>
-        <TableCell align="right">{data.lost}</TableCell>
-        <TableCell align="right">{data.drawn}</TableCell>
-        <TableCell align="right">{data.gf}</TableCell>
-        <TableCell align="right">{data.ga}</TableCell>
+        <TableCell>
+          <div className="table-inline-item">
+            <img src={PremierLeague[`${data.team}`].mark} alt={data.team} />
+            {data.team}
+          </div>
+        </TableCell>
+        <TableCell>{data.won + data.lost + data.drawn}</TableCell>
+        <TableCell>{data.won}</TableCell>
+        <TableCell>{data.lost}</TableCell>
+        <TableCell>{data.drawn}</TableCell>
+        <TableCell>{data.gf}</TableCell>
+        <TableCell>{data.ga}</TableCell>
+        <TableCell>
+          {Number(data.gf - data.ga) > 0 && "+"}
+          {data.gf - data.ga}
+        </TableCell>
+        <TableCell>{3 * data.won + data.drawn}</TableCell>
+        <TableCell>
+          <div className="table-inline-item">
+            {data.form
+              .sort((pre, cur) => (pre.time < cur.time ? -1 : 1))
+              .map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={`game-status-${
+                      item.res === GameStatus.win
+                        ? "win"
+                        : item.res === GameStatus.lost
+                        ? "lost"
+                        : "drawn"
+                    }`}
+                  >
+                    {item.res === GameStatus.win
+                      ? "W"
+                      : item.res === GameStatus.lost
+                      ? "L"
+                      : "D"}
+                  </div>
+                );
+              })}
+          </div>
+        </TableCell>
+        <TableCell>
+          {" "}
+          <div className="table-inline-item">
+            <img
+              src={PremierLeague[`${data.schedule[0].team}`].mark}
+              alt={data.team}
+            />
+          </div>
+        </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell
+          style={{
+            paddingBottom: 0,
+            paddingTop: 0,
+            borderBottom: "unset",
+          }}
+          colSpan={6}
+        >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <Typography variant="h6" gutterBottom component="div">
                 History
               </Typography>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <>hihi</>
-                </TableBody>
-              </Table>
             </Box>
           </Collapse>
         </TableCell>
@@ -204,7 +252,7 @@ export default function FootballScoreTable() {
         gf: gf,
         ga: ga,
         form: form,
-        schedule: next,
+        schedule: next.sort((pre, cur) => (pre.time < cur.time ? -1 : 1)),
       });
     });
 
@@ -223,21 +271,27 @@ export default function FootballScoreTable() {
             <TableRow>
               <TableCell />
               <TableCell>Position</TableCell>
-              <TableCell align="right">Won</TableCell>
-              <TableCell align="right">Drawn</TableCell>
-              <TableCell align="right">Lost</TableCell>
-              <TableCell align="right">GF</TableCell>
-              <TableCell align="right">GA</TableCell>
-              <TableCell align="right">GD</TableCell>
-              <TableCell align="right">Points</TableCell>
-              <TableCell align="right">Form</TableCell>
-              <TableCell align="right">Next</TableCell>
+              <TableCell align="center">Club</TableCell>
+              <TableCell align="center">Played</TableCell>
+              <TableCell align="center">Won</TableCell>
+              <TableCell align="center">Drawn</TableCell>
+              <TableCell align="center">Lost</TableCell>
+              <TableCell align="center">GF</TableCell>
+              <TableCell align="center">GA</TableCell>
+              <TableCell align="center">GD</TableCell>
+              <TableCell align="center">Points</TableCell>
+              <TableCell align="center">Form</TableCell>
+              <TableCell align="center">Next</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {newData?.map((row, index) => {
-              return <Row key={row.team} data={row} order={index} />;
-            })}
+            {newData
+              ?.sort((pre, cur) =>
+                3 * pre.won + pre.drawn > 3 * cur.won + cur.drawn ? -1 : 1
+              )
+              .map((row, index) => {
+                return <Row key={row.team} data={row} order={index} />;
+              })}
           </TableBody>
         </Table>
       </TableContainer>

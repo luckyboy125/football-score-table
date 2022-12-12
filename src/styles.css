@@ -9,3 +9,48 @@
 .table-title {
   height: 80px;
 }
+.table-inline-item {
+  display: flex;
+  align-items: center;
+}
+.table-inline-item img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+.game-status-win {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 3px;
+  background-color: #13cf00;
+  font-weight: 500;
+  color: #fff;
+}
+.game-status-lost {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 3px;
+  background-color: #d81920;
+  font-weight: 500;
+  color: #fff;
+}
+.game-status-drawn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 3px;
+  background-color: #76766f;
+  font-weight: 500;
+  color: #fff;
+}
